@@ -4,6 +4,8 @@ A small [zig](https://ziglang.org/) implementation of [Ulid](https://github.com/
 
 Honestly, I was surprised at how small the spec was.  I probably missed something.
 
+Tested with zig 0.12.0 and 0.13.0.  If not for b.path(), it would probably work for 0.11.0.
+
 ## Features
 
 - [x] No allocations
@@ -14,6 +16,7 @@ Honestly, I was surprised at how small the spec was.  I probably missed somethin
 
 ```zig
 
+// Default usage
 const Ulid = @import("ulid");
 const id = Ulid.new();
 const str = id.toString(); // e.g. "01J0J510YN2KZV7APEE1BQ8BYP"
@@ -21,6 +24,15 @@ const copy = try Ulid.parseString(str); // == id
 
 const epoch_ms: u48 = ulid.timestamp();
 const random_data: [10]u8 = ulid.data();
+
+// Monotonic
+var monotonic = Ulid.MonotonicFactory{};
+const ulid_1 = try monotonic.next(); // e.g. "01J0JBY3EXAVVZ227VE93QJD2M"
+const ulid_2 = try monotonic.next(); // e.g. "01J0JBY3EXAVVZ227VE93QJD2N"
+
+// or using the global factory (not recommended but available)
+const ulid_3 = try Ulid.newMonotonic(); // e.g. "01J0JC10BFE2CJB7M2SZXX98NH"
+const ulid_4 = try Ulid.newMonotonic(); // e.g. "01J0JC10BFE2CJB7M2SZXX98NJ"
 
 ```
 

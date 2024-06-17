@@ -1,6 +1,9 @@
 const std = @import("std");
 
 const Ulid = @This();
+pub const MonotonicFactory = @import("./monotonic.zig");
+pub const Min = Ulid{ .bytes = [_]u8{0} ** 16 };
+pub const Max = Ulid{ .bytes = [_]u8{0xFF} ** 16 };
 
 bytes: [16]u8,
 
@@ -13,6 +16,17 @@ pub fn new() Ulid {
     std.crypto.random.bytes(ulid.bytes[6..]);
 
     return ulid;
+}
+
+var mono_mutex = std.Thread.Mutex{};
+var default_mono_factory = MonotonicFactory{};
+
+/// Uses a global monotonic factory.  Can be slow since it uses locks to coordinate threads.
+/// If you want to bypass that step, initialize your own MonotonicFactory
+pub fn newMonotonic() MonotonicFactory.MonotonicError!Ulid {
+    mono_mutex.lock();
+    defer mono_mutex.unlock();
+    return default_mono_factory.next();
 }
 
 pub const ParseStringError = error{
@@ -93,11 +107,7 @@ test "init" {
 }
 
 test "max" {
-    const ulid = Ulid{
-        .bytes = [_]u8{0xFF} ** 16,
-    };
-    const str = ulid.toString();
-
+    const str = Max.toString();
     try std.testing.expectEqualStrings("7ZZZZZZZZZZZZZZZZZZZZZZZZZ", &str);
 }
 
@@ -123,4 +133,8 @@ test "errors" {
     } else |err| {
         try std.testing.expectEqual(Ulid.ParseStringError.InvalidUlidChar, err);
     }
+}
+
+test {
+    _ = MonotonicFactory;
 }
