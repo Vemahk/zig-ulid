@@ -65,6 +65,10 @@ pub fn data(self: Ulid) [10]u8 {
     return self.bytes[6..];
 }
 
+pub fn order(lhs: Ulid, rhs: Ulid) std.math.Order {
+    return std.mem.order(u8, &lhs.bytes, &rhs.bytes);
+}
+
 const b32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 pub fn toString(self: Ulid) [26]u8 {
     var fixed = std.io.fixedBufferStream(&self.bytes);

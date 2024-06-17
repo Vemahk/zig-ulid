@@ -43,9 +43,11 @@ test "monotonic" {
 
     var count: usize = 0;
     while (true) {
+        const prev_ulid = factory.last_ulid;
         const ulid = try factory.next();
-        const ts = ulid.timestamp();
-        if (ts > next_ms) break;
+        try std.testing.expectEqual(ulid.order(prev_ulid), .gt);
+
+        if (ulid.timestamp() > next_ms) break;
         count += 1;
     }
 
