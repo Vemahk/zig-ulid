@@ -10,7 +10,7 @@ Tested with zig 0.12.0 and 0.13.0.  If not for b.path(), it would probably work 
 
 - [x] No allocations
 - [x] To/From String
-- [ ] Monotonicity
+- [x] Monotonicity
 
 ## Examples
 
