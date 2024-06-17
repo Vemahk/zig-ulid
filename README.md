@@ -23,3 +23,38 @@ const epoch_ms: u48 = ulid.timestamp();
 const random_data: [10]u8 = ulid.data();
 
 ```
+
+## Use
+
+build.zig.zon
+
+```
+.ulid = .{
+    .url = "https://github.com/Vemahk/zig-ulid/archive/<git_commit_hash>.tar.gz",
+},
+```
+
+build.zig
+
+```zig
+
+const target = b.standardTargetOptions(.{});
+const optimize = b.standardOptimizeOption(.{});
+
+const root = b.path("src/main.zig");
+const exe = b.addExecutable(.{
+    .name = "your_project",
+    .root_source_file = root,
+    .target = target,
+    .optimize = optimize,
+});
+
+const dep_opts = .{ .target = target, .optimize = optimize };
+const ulid_mod = b.dependency("ulid", dep_opts).module("ulid");
+exe.root_module.addImport("ulid", ulid_mod);
+
+b.installArtifact(exe);
+
+```
+
+Or something like that.
