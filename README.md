@@ -1,8 +1,6 @@
 # zig-ulid
 
-A small [zig](https://ziglang.org/) implementation of [Ulid](https://github.com/ulid/spec).
-
-Honestly, I was surprised at how small the spec was.  I probably missed something.
+A binary, zero-alloc [zig](https://ziglang.org/) implementation of [Ulid](https://github.com/ulid/spec).
 
 Tested with zig 0.12.0 and 0.13.0.  If not for b.path(), it would probably work for 0.11.0.
 
@@ -68,5 +66,3 @@ exe.root_module.addImport("ulid", ulid_mod);
 b.installArtifact(exe);
 
 ```
-
-Or something like that.
